@@ -105,7 +105,7 @@ lazy val `quill-async` =
     .settings(
       fork in Test := true,
       libraryDependencies ++= Seq(
-        "com.github.mauricio" %% "db-async-common"  % "0.2.21"
+        "com.github.mauricio" %% "db-async-common"  % "0.2.22-IQ.1"
       )
     )
     .dependsOn(`quill-sql-jvm` % "compile->compile;test->test")
@@ -117,7 +117,7 @@ lazy val `quill-async-mysql` =
     .settings(
       fork in Test := true,
       libraryDependencies ++= Seq(
-        "com.github.mauricio" %% "mysql-async"      % "0.2.21"
+        "com.github.mauricio" %% "mysql-async"      % "0.2.22-IQ.1"
       )
     )
     .dependsOn(`quill-async` % "compile->compile;test->test")
@@ -129,7 +129,7 @@ lazy val `quill-async-postgres` =
     .settings(
       fork in Test := true,
       libraryDependencies ++= Seq(
-        "com.github.mauricio" %% "postgresql-async" % "0.2.21"
+        "com.github.mauricio" %% "postgresql-async" % "0.2.22-IQ.1"
       )
     )
     .dependsOn(`quill-async` % "compile->compile;test->test")
@@ -236,6 +236,14 @@ def updateWebsiteTag =
 lazy val commonSettings = ReleasePlugin.extraReleaseCommands ++ Seq(
   organization := "io.getquill",
   scalaVersion := "2.11.11",
+  resolvers += "IQOption Nexus Release" at "http://nexus.mobbtech.com/repository/maven-releases",
+  resolvers += "IQOption Nexus Snapshot" at "http://nexus.mobbtech.com/repository/maven-snapshots",
+  credentials += {
+    Seq("build.publish.host", "build.publish.user", "build.publish.password") map sys.props.get match {
+      case Seq(Some(host), Some(user), Some(pass)) ⇒ Credentials("Sonatype Nexus Repository Manager", host, user, pass)
+      case _                                       ⇒ Credentials(Path.userHome / ".ivy2" / ".credentials")
+    }
+  },
   crossScalaVersions := Seq("2.11.11","2.12.3"),
   libraryDependencies ++= Seq(
     "org.scalamacros" %% "resetallattrs"  % "1.0.0",
