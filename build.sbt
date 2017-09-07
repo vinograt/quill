@@ -299,11 +299,11 @@ lazy val commonSettings = ReleasePlugin.extraReleaseCommands ++ Seq(
     .setPreference(SpacesAroundMultiImports, true),
   publishMavenStyle := true,
   publishTo := {
-    val nexus = "https://oss.sonatype.org/"
+    val nexus = "http://nexus.mobbtech.com/repository/"
     if (isSnapshot.value)
-      Some("snapshots" at nexus + "content/repositories/snapshots")
+      Some("snapshots" at nexus + "maven-snapshots")
     else
-      Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+      Some("releases" at nexus + "maven-releases")
   },
   pgpSecretRing := file("local.secring.gpg"),
   pgpPublicRing := file("local.pubring.gpg"),
