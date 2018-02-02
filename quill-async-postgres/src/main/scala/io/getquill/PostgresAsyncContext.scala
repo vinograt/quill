@@ -1,7 +1,7 @@
 package io.getquill
 
-import com.github.mauricio.async.db.{ QueryResult => DBQueryResult }
-import com.github.mauricio.async.db.pool.PartitionedConnectionPool
+import com.github.mauricio.async.db.{ QueryResult ⇒ DBQueryResult }
+import com.github.mauricio.async.db.pool.{ ConnectionPoolListener, PartitionedConnectionPool }
 import com.github.mauricio.async.db.postgresql.PostgreSQLConnection
 import com.typesafe.config.Config
 import io.getquill.context.async.{ ArrayDecoders, ArrayEncoders, AsyncContext, UUIDObjectEncoding }
@@ -14,6 +14,7 @@ class PostgresAsyncContext[N <: NamingStrategy](pool: PartitionedConnectionPool[
   with UUIDObjectEncoding {
 
   def this(config: PostgresAsyncContextConfig) = this(config.pool)
+  def this(config: Config, poolListener: ConnectionPoolListener) = this(PostgresAsyncContextConfig(config, Some(poolListener)))
   def this(config: Config) = this(PostgresAsyncContextConfig(config))
   def this(configPrefix: String) = this(LoadConfig(configPrefix))
 

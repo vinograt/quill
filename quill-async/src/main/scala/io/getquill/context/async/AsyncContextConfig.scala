@@ -5,9 +5,7 @@ import java.nio.charset.Charset
 import com.github.mauricio.async.db.Configuration
 import com.github.mauricio.async.db.Connection
 import com.github.mauricio.async.db.SSLConfiguration
-import com.github.mauricio.async.db.pool.ObjectFactory
-import com.github.mauricio.async.db.pool.PartitionedConnectionPool
-import com.github.mauricio.async.db.pool.PoolConfiguration
+import com.github.mauricio.async.db.pool.{ ConnectionPoolListener, ObjectFactory, PartitionedConnectionPool, PoolConfiguration }
 import com.github.mauricio.async.db.util.AbstractURIParser
 import com.typesafe.config.Config
 
@@ -17,7 +15,8 @@ import scala.util.Try
 abstract class AsyncContextConfig[C <: Connection](
   config:            Config,
   connectionFactory: Configuration => ObjectFactory[C],
-  uriParser:         AbstractURIParser
+  uriParser:         AbstractURIParser,
+  poolListener:      Option[ConnectionPoolListener]    = None
 ) {
   def url = Try(config.getString("url")).toOption
   def user = Try(config.getString("user")).toOption
@@ -79,6 +78,7 @@ abstract class AsyncContextConfig[C <: Connection](
     new PartitionedConnectionPool[C](
       connectionFactory(configuration),
       poolConfiguration,
-      numberOfPartitions
+      numberOfPartitions,
+      connectionPoolListener = poolListener
     )
 }
